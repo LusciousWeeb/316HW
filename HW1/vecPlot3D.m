@@ -1,0 +1,36 @@
+function f = vecPlot3D(Vstart, Vend, Scaling, Colour, Origin)
+
+    if (Origin)
+        scatter3(Vstart(1), Vstart(2), Vstart(3), 'filled', 'o');
+    else
+        scatter3(Vstart(1), Vstart(2), Vstart(3));
+    end
+
+    hold on;
+
+    if length(Vstart) ~= 3 || length(Vend) ~= 3
+        f = 0;
+        fprintf('Vectors must be 3-dimensional\n');
+        return;
+    end
+    scatter3(Vend(1), Vend(2), Vend(3));
+    Vdiff = Vend - Vstart;
+    hold on;
+    if strcmpi(Scaling, 'on')
+        quiver3(Vstart(1), Vstart(2), Vstart(3), ...
+            Vdiff(1), Vdiff(2), Vdiff(3), 'Color', Colour, 'AutoScale', 'on', 'LineWidth', 2);
+    else
+        quiver3(Vstart(1), Vstart(2), Vstart(3), ...
+            Vdiff(1), Vdiff(2), Vdiff(3), 'Color', Colour, 'AutoScale', 'off', 'LineWidth', 2);
+    end
+    view(3);
+    grid on;
+    xlabel('X');
+    ylabel('Y');
+    zlabel('Z');
+    return;
+
+
+
+
+end
