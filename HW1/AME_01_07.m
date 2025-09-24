@@ -20,16 +20,14 @@ for i = 1:N
 
 end
 
-%Test charge input
+%Field Point
 
-Xtest = input('X Coordinate of Qtest in units of cm: ');
-Ytest = input('Y Coordinate of Qtest in units of cm: ');
-Ztest = input('Z Coordinate of Qtest in units of cm: ');
+Xtest = input('X Coordinate of Field Point in units of cm: ');
+Ytest = input('Y Coordinate of Field Point in units of cm: ');
+Ztest = input('Z Coordinate of Field Point in units of cm: ');
 
 
 coords_test = [Xtest Ytest Ztest];
-Qtest = input('Value of Qtest in nC: ')
-
 % Plot the points
 for i = 1:N
     

@@ -20,23 +20,13 @@ for i = 1:N
 
 end
 
-%Test charge input
-
-Xtest = input('X Coordinate of Qtest in units of cm: ');
-Ytest = input('Y Coordinate of Qtest in units of cm: ');
-Ztest = input('Z Coordinate of Qtest in units of cm: ');
-
-
-coords_test = [Xtest Ytest Ztest];
-Qtest = input('Value of Qtest in nC: ')
 
 % Plot the points
 for i = 1:N
-    
-    rvec = coords_test - coords_Q(i, :)
-    rmag = vectorMag(rvec)
-    F_vec = (k * Qtest * vector_Q(i) * 10E-18 * rvec) ./ (rmag).^3;
-    Magnitude = vectorMag([F_vec]);
+    Fx = (k * vector_Q(i) * 10E-18) ./ (coords_Q(i, 1)).^2;
+    Fy = (k * vector_Q(i) * 10E-18) ./ (coords_Q(i, 2)).^2;
+    Fz = (k * vector_Q(i) * 10E-18) ./ (coords_Q(i, 3)).^2;
+    Magnitude = vectorMag([Fx Fy Fz]);
     fprintf(['For source charge Q%1.0f, the force component is \n' ...
         'Fx = %.3e\n' ...
         'Fy = %.3e\n' ...
@@ -50,18 +40,11 @@ for i = 1:N
     hold on;
     plot3([coords_Q(i,1) Xtest], [coords_Q(i,2) Ytest], [coords_Q(i,3) Ztest], 'LineStyle', '-.', 'Color', 'b') %Plots the line
     
-    
-    Vend = coords_test + coords_Q(i, :);
-    vecPlot3D(coords_test, Vend, 1, 'b', 0);
+    vecPlot3D([coords_Q(i,1), coords_Q(i,2), coords_Q(i,3)], [Xtest, Ytest, Ztest], 1, 'b', 0);
     hold on;
-
-
-    Vstart = coords_test;
-    Vend = coords_test + F_vec;
-    vecPlot3D(Vstart, Vend, 0, 'r', 1);
+    vecPlot3D([Fx, Fy, Fz], [Xtest, Ytest, Ztest], 1, 'r', 1);
 
 end
-scatter3(Xtest, Ytest, Ztest, 80, 'blue', 'o')
 axis equal
 grid on
 view(3)   % force 3D view

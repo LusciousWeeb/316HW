@@ -1,9 +1,9 @@
 function f = vecPlot3D(Vstart, Vend, Scaling, Colour, Origin)
 
     if (Origin)
-        scatter3(Vstart(1), Vstart(2), Vstart(3), 'filled', 'o');
+        scatter3(Vend(1), Vend(2), Vend(3), 'filled', 'o');
     else
-        scatter3(Vstart(1), Vstart(2), Vstart(3));
+        scatter3(Vend(1), Vend(2), Vend(3));
     end
 
     hold on;

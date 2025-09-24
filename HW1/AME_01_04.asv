@@ -35,8 +35,9 @@ for i = 1:N
     
     rvec = coords_test - coords_Q(i, :)
     rmag = vectorMag(rvec)
-    F_vec = (k * Qtest * vector_Q(i) * 10E-18 * rvec) ./ (rmag).^3;
-    Magnitude = vectorMag([F_vec]);
+    Fx = (k * Qtest * vector_Q(i) * 10E-18 * rvec(1)) ./ (rmag).^3;
+    F_vec = [Fx Fy Fz];
+    Magnitude = vectorMag([Fx Fy Fz]);
     fprintf(['For source charge Q%1.0f, the force component is \n' ...
         'Fx = %.3e\n' ...
         'Fy = %.3e\n' ...
