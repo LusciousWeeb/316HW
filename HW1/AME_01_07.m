@@ -1,65 +1,69 @@
+clc; clear; close all;
+
+k = 8.9875e9;       % Coulomb constant
+cm2m = 1e-2;        % cm -> m
+scaleQ = 1e-9;      % nC -> C
+
 vector_Q = [];
 coords_Q = [];
-k = 1 ./ (4 * pi * 8.854E-12)
 
 N = input('Number of source charges: ');
 
 for i = 1:N
-    X = input(sprintf('X Coordinate of Q%1.0f in units of cm: ', i));
-    Y = input(sprintf('Y Coordinate of Q%1.0f in units of cm: ', i));
-    Z = input(sprintf('Z Coordinate of Q%1.0f in units of cm: ', i));
+    X = input(sprintf('X Coordinate of Q%1.0f (cm): ', i));
+    Y = input(sprintf('Y Coordinate of Q%1.0f (cm): ', i));
+    Z = input(sprintf('Z Coordinate of Q%1.0f (cm): ', i));
 
-    if ~(isnumeric([X Y Z]))
-        fprintf('The inputed coordinate address is invalid!')
-        break;
-    end
-    coords_Q = [[X Y Z]; coords_Q];
-    vector_Q(i) = input(sprintf('Value of Q%1.0f in nC: ', i));
-    
-    
-
+    coords_Q = [coords_Q; X Y Z];
+    vector_Q(i) = input(sprintf('Value of Q%1.0f (nC): ', i));
 end
 
-%Field Point
-
-Xtest = input('X Coordinate of Field Point in units of cm: ');
-Ytest = input('Y Coordinate of Field Point in units of cm: ');
-Ztest = input('Z Coordinate of Field Point in units of cm: ');
-
+Xtest = input('X Coordinate of Field Point (cm): ');
+Ytest = input('Y Coordinate of Field Point (cm): ');
+Ztest = input('Z Coordinate of Field Point (cm): ');
 
 coords_test = [Xtest Ytest Ztest];
-% Plot the points
+
+% --- Convert units ---
+coords_Q = coords_Q * cm2m;
+coords_test = coords_test * cm2m;
+vector_Q = vector_Q * scaleQ;
+
+F_each = zeros(N,3);
+F_total = [0 0 0];
+
+% --- Compute force vectors ---
 for i = 1:N
-    
-    rvec = coords_test - coords_Q(i, :)
-    rmag = vectorMag(rvec)
-    F_vec = (k * Qtest * vector_Q(i) * 10E-18 * rvec) ./ (rmag).^3;
-    Magnitude = vectorMag([F_vec]);
-    fprintf(['For source charge Q%1.0f, the force component is \n' ...
-        'Fx = %.3e\n' ...
-        'Fy = %.3e\n' ...
-        'Fz = %.3e\n' ...
-        'Magnitude = %.3e\n'], N, Fx, Fy, Fz, Magnitude)
-    
-    hold on;
-    % Plot the dot
+    rvec = coords_test - coords_Q(i,:);
+    rmag = norm(rvec);
 
-    scatter3(coords_Q(i,1), coords_Q(i,2), coords_Q(i,3), 80, 'blue', 'o')  %source
-    hold on;
-    plot3([coords_Q(i,1) Xtest], [coords_Q(i,2) Ytest], [coords_Q(i,3) Ztest], 'LineStyle', '-.', 'Color', 'b') %Plots the line
+    F_each(i,:) = k * vector_Q(i) * rvec / (rmag^3);
+    F_total = F_total + F_each(i,:);
     
-    
-    Vend = coords_test + coords_Q(i, :);
-    vecPlot3D(coords_test, Vend, 1, 'b', 0);
-    hold on;
-
-
-    Vstart = coords_test;
-    Vend = coords_test + F_vec;
-    vecPlot3D(Vstart, Vend, 0, 'r', 1);
-
+    Magnitude = norm(F_each(i,:));
+    fprintf(['For source charge Q%1.0f:\n' ...
+        'Fx = %.3e\nFy = %.3e\nFz = %.3e\nMagnitude = %.3e\n\n'], ...
+        i, F_each(i,1), F_each(i,2), F_each(i,3), Magnitude);
 end
-scatter3(Xtest, Ytest, Ztest, 80, 'blue', 'o')
-axis equal
-grid on
-view(3)   % force 3D view
+
+Fmag = norm(F_total);
+
+fprintf('Total Force at Field Point:\nFx = %.3e\nFy = %.3e\nFz = %.3e\nMagnitude = %.3e\n', ...
+    F_total(1), F_total(2), F_total(3), Fmag);
+
+% --- Plot ---
+figure; hold on; grid on; axis equal;
+xlabel('X (m)'); ylabel('Y (m)'); zlabel('Z (m)');
+
+% Scale vectors (like friend)
+scale = 1/(100*Fmag);
+
+% Blue arrows: individual contributions
+for i = 1:N
+    vecPlot3D(coords_test, F_each(i,:)*scale, 1, 'b', 0);
+end
+
+% Red arrow: total
+vecPlot3D(coords_test, F_total*scale, 1, 'r', 1);
+
+view(3);

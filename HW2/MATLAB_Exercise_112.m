@@ -28,7 +28,8 @@ E_z = sum(E_z_prior);
 
 Ez = ((p_s * a^2) / (2*eps0*z_f^2)) * ((a / (sqrt(z_f^2 + a^2)) ) + ((z_f - a) / abs(z_f - a)));
 
-
+err = abs((Ez - E_z) / Ez) * 100
 
 fprintf(['The numerical solution outputs: %.3e V/m\n' ...
-    'The analytical solution outputs: %.3e V/m\n'], E_z, Ez)
+    'The analytical solution outputs: %.3e V/m\n'...
+    'The relative error is: %.3e\n'], E_z, Ez, err)
