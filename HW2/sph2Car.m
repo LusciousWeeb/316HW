@@ -4,5 +4,4 @@ function [x, y, z] = sph2Car(p, theta, phi)
     z = p .* cos(phi);
 
 
-    fprintf('The cartesian coordinates of the given input are: \nx = %.3f\ny = %.3f\nz =%.3f\n', x, y, z);
 end

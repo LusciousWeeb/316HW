@@ -1,4 +1,4 @@
-f = uifigure('Name','Material Permittivity','Position', [500 500 500 500]);
+f = uifigure('Name','Material Permittivity','Position', [500 350 500 500]);
 
 % List out the values and materials
 materials = {'Vaccuum', 'Freon', 'Air', 'Styrofoam', 'Polyurethane foam', 'Paper', 'Wood', 'Dry soil', 'Paraffin', 'Teflon', 'Vaseline', 'Polyethylene', 'Oil', 'Rubber', 'Polystyrene', ...
