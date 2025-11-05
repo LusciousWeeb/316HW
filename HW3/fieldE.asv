@@ -1,0 +1,12 @@
+function [E, Eunit, Emag] = fieldE(EPS0, x0, y0, z0, rhos, S, x, y, z)
+    k = 1 / (4 * pi * EPS0);
+    dx = x - x0;
+    dy = y - y0;
+    dz = z - z0;
+    Ri = sqrt(dx.^2 + dy.^2 + dz.^2);
+    inside = (rhos(1,:) .* S(:)) ./ Ri.^2;
+
+    E = k * sum(inside, 1);
+    Emag = norm(E);
+    Eu
+end

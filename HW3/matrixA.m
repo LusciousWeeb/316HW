@@ -18,6 +18,9 @@ function A = matrixA(eps, dS, x, y, z)
             if (i == j)
                 A(i, j) = sqrt(dS(j)) / (2 * sqrt(pi) * eps);
             else
+                if R < 1e-12
+                    R = 1e-12;
+                end;
                 A(i, j) = dS(j) / (4 * pi * R * eps);
             end
 

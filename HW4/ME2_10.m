@@ -1,0 +1,112 @@
+clc; close all;
+% Values
+eps0 = 8.8542E-12
+a = 1E-2;
+b = 3E-2;
+Nlist = [2,3,5,7,9,10,12,25]; %Changes as needed
+list3 = [3, 10, 25];
+list4 = [2,3,5,10,25,50,75];
+list5 = [2,3,5,10,25,50,75];
+list6 = [2,3,5,10,25,50,75];
+Qinner = zeros(size(list5));
+Qoutter = zeros(size(list5));
+Va = 1;
+Vb = -1;
+tol = 10E-8;
+n = 1;
+
+% Set-Up, loop through N
+for N = Nlist
+    d = a / N;
+    dy = -b/2:d:b/2;
+    dx = -b/2:d:b/2;
+    M = length(dy); % Size of the square
+    
+    %Voltage Set up:
+    V = zeros(M,M);
+    
+    V(1,:) = Vb;
+    V(end, :) = Vb;
+    V(:, 1) = Vb;
+    V(:, end) = Vb;
+    
+    for i = 1:M
+        for j = 1:M
+           if ((abs(dx(i)) <= a / 2) && ( abs(dy(j)) <= a / 2))
+               V(j,i) = Va;
+           end
+        end
+    end
+    
+    % Start iterating
+    current_diff = 1;
+    diff = 1;
+    k = 1;
+    
+    while current_diff > tol
+        Vold = V;
+        for i = 2:M-1
+            for j = 2:M-1
+               if ((abs(dx(i)) <= a / 2) && ( abs(dy(j)) <= a / 2))
+                continue
+               end
+               V(j,i) = 0.25 * (Vold(j+1,i) + Vold(j-1,i) + Vold(j,i+1) + Vold(j,i-1));
+            end
+        end
+        diff = max(abs(V(:) - Vold(:)));
+        if current_diff > diff
+            current_diff = diff; % Update the current difference for the next iteration
+        end
+        k = k+1;
+    end
+    
+    fprintf('Converged after %d iterations, max difference = %.3e V\n', k, current_diff);
+    fprintf('%d is done, moving to next\n', N)
+    
+    % Plotting time
+
+    if (ismember(N, list3))
+        [X, Y] = meshgrid(dx, dy);
+ 
+     
+        % 3D surface plot
+        figure;
+        surf(X, Y, V);
+        colorbar;
+        xlabel('x (m)');
+        ylabel('y (m)');
+        zlabel('Potential V (V)');
+        title('Potential distribution in coaxial square');
+    end
+    % Inner
+    if (ismember(N, list4))
+        inner_ax = find(abs(dx) <= a / 2);
+        inner_ay = find(abs(dy) <= a / 2);
+        
+        rho_inner = eps0 * -(V(inner_ay(end) + 1, inner_ax) - V(inner_ay(end), inner_ax)) /d;
+        
+        figure;
+        plot(inner_ax, rho_inner);
+        hold on;
+        xlabel('Coordinate of Inner Conductor [m]');
+        ylabel('\rho [{C/m^2}]', 'Interpreter','tex');
+    end
+    % Outter
+    if (ismember(N, list5))        
+        rho = eps0 * -(V / d);
+        figure;
+        plot(dx(1,:), rho(1, :));
+        hold on;
+        xlabel('Coordinate of Inner Conductor [m]');
+        ylabel('\rho [{C/m^2}]', 'Interpreter', 'tex')
+        text(b, rho(1), strcat('\leftarrow', num2str(N)), 'FontSize', 3);
+
+    end
+
+end
+
+
+
+    
+    
+    
